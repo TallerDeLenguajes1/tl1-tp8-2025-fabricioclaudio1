@@ -12,6 +12,7 @@
         string? descripcion;
         int duracion;
         int id = 0;
+        int idRealizadas = 0;
 
         while (select != 0)
         {
@@ -19,11 +20,10 @@
             === MENÚ CALCULADORA ===
             1. Agregar una Tarea Pendiente.
             2. Mover Tareas Pendientes a Realizadas.
-            3. Listar Tareas Pendientes y Realizadas.
-            4. Buscar Tareas por ID.
-            5. Buscar Tareas por palabra clave.
+            3. Buscar Tareas Pendientes por Descripcion.
+            4. Listar Tareas Pendientes y Realizadas.
 
-            6. Salir
+            0. Salir
             ========================
             ");
             select = NumeroEnteroPorTeclado();
@@ -45,32 +45,62 @@
                 case 2:
                     {
                         Console.WriteLine("Lista de tareas Pendientes: ");
-                        Console.WriteLine("ID |");
+                        Console.WriteLine("ID|");
                         foreach (var tarea in tareasPendientes)
                         {
                             Console.WriteLine($"{tarea.TareaID} | {tarea.Descripcion} | {tarea.Duracion}");
                         }
-                        Console.WriteLine("Escribe el ID de la Tarea que deseas mover a Pendientes");
+                        Console.WriteLine("Escribe el ID de la Tarea que deseas mover a Realizadas");
                         int idTareaMover = NumeroEnteroPorTeclado();
 
-                        foreach (var tarea in tareasPendientes)
-                        {
-                            if (tarea.TareaID != 0 && tarea.TareaID == idTareaMover)
-                            {
-                                tareasPendientes.RemoveAt(tarea.TareaID);
-                            }
-                        }
+                        Tarea? tareaMover = tareasPendientes.FirstOrDefault(t => t.TareaID == idTareaMover);
 
+                        if (tareaMover != null)
+                        {
+                            tareasRealizadas.Add(new Tarea(idRealizadas++, tareaMover.Descripcion, tareaMover.Duracion));
+                            tareasPendientes.Remove(tareaMover);
+                            Console.WriteLine("La Tarea se movio con exito");
+                        }
+                        else
+                        {
+                            Console.WriteLine("No se encontro la tarea con el id especificado");
+                        }
 
 
                         break;
                     }
                 case 3:
                     {
+                        Console.WriteLine("Escribe una descripcion de la Tarea Pendiente que deseas encontrar: ");
+                        descripcion = Console.ReadLine();
+                        Tarea? buscarTareaPendiente = tareasPendientes.FirstOrDefault(t => t.Descripcion == descripcion);
+                        if (buscarTareaPendiente != null)
+                        {
+                            Console.WriteLine("La tarea encontrada: ");
+                            Console.WriteLine("ID|");
+                            Console.WriteLine($"{buscarTareaPendiente.TareaID} | {buscarTareaPendiente.Descripcion} | {buscarTareaPendiente.Duracion}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("No se encontro la tarea con el id especificado");
+                        }
                         break;
                     }
                 case 4:
                     {
+                        Console.WriteLine("===Lista de tareas Pendientes===");
+                        Console.WriteLine("ID|");
+                        foreach (var tarea in tareasPendientes)
+                        {
+                            Console.WriteLine($"{tarea.TareaID} | {tarea.Descripcion} | {tarea.Duracion}");
+                        }
+
+                        Console.WriteLine("===Lista de tareas Realizadas=== ");
+                        Console.WriteLine("ID|");
+                        foreach (var tarea in tareasRealizadas)
+                        {
+                            Console.WriteLine($"{tarea.TareaID} | {tarea.Descripcion} | {tarea.Duracion}");
+                        }
                         break;
                     }
                 case 5:
